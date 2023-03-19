@@ -1,24 +1,11 @@
-// const cells = document.querySelectorAll('tr');
+const button = document.getElementById("button");
 
-// chrome.webRequest.onBeforeRequest.addListener(
-//     onIntercept,
-//     {urls: ["https://csgofloat.com/*"]}
-//   );
+button.addEventListener("click", function() {
+  runScript();
+})
 
-chrome.webRequest.onBeforeRequest.addListener(
-    onIntercept,
-    {urls: ["<all_urls>"]},
-    ["blocking"]
-  );
-
-function intercept() {
-
+async function runScript() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {type:"initialize"});
+});
 }
-
-function onIntercept(req) {
-    console.log(req);
-}
-
-// intercept();
-
-console.log(cells);

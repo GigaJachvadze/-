@@ -9,6 +9,25 @@ let selectedIndex;
 
 loading = false;
 
+chrome.runtime.onMessage.addListener(msgObj => {
+    console.log("got message 😎");
+    notMyCode();
+});
+
+function notMyCode() {
+    let f = 0;
+    while (true){
+        let x = document.getElementsByClassName("mat-row");
+        let y = x[f].childNodes[8];
+        if (y.childElementCount != 0) {
+            y.parentNode.remove();
+        }
+        else {
+            f = f+1;
+        }
+    }
+}
+
 function getProfileIdByIndex(index) {
     let children = cells.item(index).children;
 
@@ -33,6 +52,10 @@ function findUserProfileIdByParentElement(el) {
 
 function listenToTableChange() {
     let newCells = document.querySelectorAll('tr');
+    if (newCells.length == 0) {
+        cellAmount = 0;
+        cells = [];
+    }
     if (newCells.length > cellAmount) {
         cells = newCells;
         cellAmount = cells.length;
