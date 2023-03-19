@@ -46,6 +46,9 @@ function addEventListeners() {
         cells.item(i).addEventListener("mouseenter", function(e) {
             selectedIndex = i;
         })
+        cells.item(i).addEventListener("mouseleave", function(e) {
+            selectedIndex = undefined;
+        })
     }
 }
 
