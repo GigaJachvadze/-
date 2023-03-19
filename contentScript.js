@@ -53,6 +53,7 @@ async function updateUsersFromStorage() {
     loading = true;
     let storage = getUsersFromStorage();
     storage.then((st) => {
+        if (!st.users) return;
         savedUsers = JSON.parse(st.users);
         loading = false;
     })
@@ -82,10 +83,10 @@ function setUp() {
 }
 
 function start() {
-    document.addEventListener("keypress", function(e) {
+    document.addEventListener("click", function(e) {
         if (loading) return;
 
-        if ((e.key == "f" || e.key == "F") && selectedIndex != undefined) {
+        if (selectedIndex != undefined) {
 
             // updateUsersFromStorage();
 
