@@ -53,9 +53,9 @@ async function updateUsersFromStorage() {
     loading = true;
     let storage = getUsersFromStorage();
     storage.then((st) => {
+        loading = false;
         if (!st.users) return;
         savedUsers = JSON.parse(st.users);
-        loading = false;
     })
 }
 
