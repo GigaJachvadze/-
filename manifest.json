@@ -1,0 +1,19 @@
+{
+    "name": "😎",
+    "version": "0.0.1",
+    "manifest_version": 3,
+    "permissions": ["storage", "activeTab", "webRequest"],
+    "host_permissions": ["https://csgofloat.com/*"],
+    "action": {
+        "default_popup": "index.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "js": ["contentScript.js"],
+            "matches": ["https://csgofloat.com/*"]
+        }
+    ]
+}
