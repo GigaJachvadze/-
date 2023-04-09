@@ -7,12 +7,22 @@ let cellAmount = 0;
 
 let selectedIndex;
 
+
 loading = false;
 
 chrome.runtime.onMessage.addListener(msgObj => {
     console.log("got message 😎");
-    notMyCode();
+    console.log(msgObj);
+    if (msgObj.type == "JSON") {
+        addData(msgObj.data);
+    } else if(msgObj.type = "GET") {
+        chrome.runtime.sendMessage(savedUsers)
+    } else {
+        notMyCode();
+    }
 });
+
+
 
 function notMyCode() {
     let f = 0;
@@ -26,6 +36,15 @@ function notMyCode() {
             f = f+1;
         }
     }
+}
+
+function addData(data) {
+    let newArr = savedUsers;
+    for (let index = 0; index < data.length; index++) {
+        newArr.push(data[index]);
+    }
+    savedUsers = newArr;
+    saveUsersInStorage();
 }
 
 function getProfileIdByIndex(index) {
@@ -108,53 +127,55 @@ function setUp() {
     updateUsersFromStorage();
 }
 
-function start() {
-    document.addEventListener("click", function(e) {
-        if (loading) return;
+function main() {
+    if (loading) return;
 
-        if (selectedIndex != undefined) {
+    if (selectedIndex != undefined) {
 
-            // updateUsersFromStorage();
+        // updateUsersFromStorage();
 
-            let state;
-            let profileId = getProfileIdByIndex(selectedIndex);
+        let profileId = getProfileIdByIndex(selectedIndex);
 
-            if (!profileId) {
-                window.prompt("COULD NOT FIND PROFILE ID");
-                return;
-            }
-
-            if (savedUsers.includes(profileId)) {
-                let userIndex = savedUsers.indexOf(profileId);
-                if (savedUsers.length == 1) {
-                    savedUsers = []
-                } else {
-                    let a = removeItemFromArray(savedUsers, userIndex);
-                    savedUsers = a;
-                }
-                state = false;
-            } else {
-                savedUsers.push(profileId);
-                state = true;
-            }
-
-            // savedUsers = [];
-
-            let savedUsersString = JSON.stringify(savedUsers);
-
-            loading = true;
-
-            chrome.storage.local.set({ users: savedUsersString }).then(() => {
-                state? console.log("steamId: " + profileId + " is added to list") : console.log("steamId: " + profileId + " is removed from list");
-                console.log(savedUsers);
-                updateUsersFromStorage();
-                console.log(savedUsers);
-                loading = false;
-                updateVisuals();
-            });
-
-
+        if (!profileId) {
+            window.prompt("COULD NOT FIND PROFILE ID");
+            return;
         }
+
+        if (savedUsers.includes(profileId)) {
+            let userIndex = savedUsers.indexOf(profileId);
+            if (savedUsers.length == 1) {
+                savedUsers = []
+            } else {
+                let a = removeItemFromArray(savedUsers, userIndex);
+                savedUsers = a;
+            }
+        } else {
+            savedUsers.push(profileId);
+        }
+
+        // savedUsers = [];
+
+        saveUsersInStorage();
+    }
+}
+
+function saveUsersInStorage() {
+    let savedUsersString = JSON.stringify(savedUsers);
+
+    loading = true;
+
+    chrome.storage.local.set({ users: savedUsersString }).then(() => {
+        console.log(savedUsers);
+        updateUsersFromStorage();
+        console.log(savedUsers);
+        loading = false;
+        updateVisuals();
+    });
+}
+
+function start() {
+    document.addEventListener("click", function() {
+        main()
     })
 
     setUp();
